@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=debian:bullseye-slim
+ARG BASE_IMAGE=phusion/baseimage:focal-1.2.0
 
 # Mutli-stage build to keep final image small. Otherwise end up with
 # curl and openssl installed
@@ -33,6 +33,8 @@ ENV MAMBA_USER=$MAMBA_USER
 
 RUN echo "source /usr/local/bin/_activate_current_env.sh" >> ~/.bashrc && \
     echo "source /usr/local/bin/_activate_current_env.sh" >> /etc/skel/.bashrc && \
+    mkdir -p /etc/my_init.d/ && \
+    ln -rs /usr/local/bin/_activate_current_env.sh /etc/my_init.d/ && \
     groupadd -g "${MAMBA_USER_GID}" "${MAMBA_USER}" && \
     useradd -u "${MAMBA_USER_ID}" -g "${MAMBA_USER_GID}" -ms /bin/bash "${MAMBA_USER}" && \
     echo "${MAMBA_USER}" > "/etc/arg_mamba_user" && \
